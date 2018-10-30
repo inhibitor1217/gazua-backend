@@ -1,7 +1,15 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const { PASSWORD_KEY: salt } = process.env;
+const crypto = require('crypto');
 
-const User = new Schema({
+function hash (password) {
+    return crypto.createHmac('sha256', salt)
+        .update(password)
+        .digest('hex');
+}
+
+const UserSchema = new Schema({
     username: String,
     email: String,
     password: String,
@@ -17,4 +25,19 @@ const User = new Schema({
     }
 });
 
-module.exports = mongoose.model('User', User);
+const User = mongoose.model('User', UserSchema);
+
+User.findByEmail = (email) => {
+    return User.findOne({ email }).exec();
+};
+
+User.localRegister = ({ username, email, password }) => {
+    const user = new User({
+        username,
+        email,
+        password: hash(password)
+    });
+    return user.save();
+};
+
+module.exports = User;
