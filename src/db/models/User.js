@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+const crypto = require('crypto');
+const token = require('lib/token');
 const { Schema } = mongoose;
 const { PASSWORD_KEY: secret } = process.env;
-const crypto = require('crypto');
 
 function hash (password) {
     return crypto.createHmac('sha256', secret)
@@ -24,6 +25,20 @@ const UserSchema = new Schema({
         }
     }
 });
+
+UserSchema.methods.verify = (password) => {
+    const hashed = hash(password);
+    return this.password === hashed;
+};
+
+UserSchema.methods.generateToken = function () { // should not use arrow function to use 'this'
+    return token.generateToken({
+        user: {
+            _id: this._id,
+            username: this.username
+        }
+    }, 'User');
+};
 
 const User = mongoose.model('User', UserSchema);
 
