@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const User = require('db/models/User');
+const token = require('lib/token');
 
 exports.localRegister = async (ctx) => {
     const { body } = ctx.request;
@@ -28,10 +29,23 @@ exports.localRegister = async (ctx) => {
             };
             return;
         }
+
         const user = await User.localRegister({
             username, email, password
         });
+
         ctx.body = user;
+        const accessToken = await token.generateToken({
+            user: {
+                _id: user._id,
+                username: user.username
+            }
+        }, 'user');
+
+        ctx.cookies.set('access_token', accessToken, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24 * 7
+        });
     } catch (e) {
         ctx.throw(500);
     }

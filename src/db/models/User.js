@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const { PASSWORD_KEY: salt } = process.env;
+const { PASSWORD_KEY: secret } = process.env;
 const crypto = require('crypto');
 
 function hash (password) {
-    return crypto.createHmac('sha256', salt)
+    return crypto.createHmac('sha256', secret)
         .update(password)
         .digest('hex');
 }
