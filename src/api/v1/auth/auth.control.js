@@ -49,7 +49,7 @@ exports.localLogin = async (ctx) => {
 
     const schema = Joi.object({
         email: Joi.string().email().required(),
-        password: Joi.string().min(6).max(30).required()
+        password: Joi.string().required()
     });
 
     const result = Joi.validate(body, schema);
@@ -76,6 +76,9 @@ exports.localLogin = async (ctx) => {
                 httpOnly: true,
                 maxAge: 1000 * 60 * 60 * 24 * 7
             });
+            ctx.body = {
+                message: 'login success'
+            };
         } else { /* Wrong password */
             ctx.status = 403;
             ctx.body = {

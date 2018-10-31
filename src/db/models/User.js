@@ -26,12 +26,12 @@ const UserSchema = new Schema({
     }
 });
 
-UserSchema.methods.verify = (password) => {
+UserSchema.methods.verify = function (password) {
     const hashed = hash(password);
     return this.password === hashed;
 };
 
-UserSchema.methods.generateToken = function () { // should not use arrow function to use 'this'
+UserSchema.methods.generateToken = function () {
     return token.generateToken({
         user: {
             _id: this._id,
