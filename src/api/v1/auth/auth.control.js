@@ -32,8 +32,12 @@ exports.localRegister = async (ctx) => {
         const user = await User.localRegister({
             username, email, password
         });
-        ctx.body = user;
 
+        ctx.body = {
+            _id: user._id,
+            username: user.username,
+            email: user.email
+        };
         const accessToken = await user.generateToken();
         ctx.cookies.set('access_token', accessToken, {
             httpOnly: true,
@@ -71,14 +75,16 @@ exports.localLogin = async (ctx) => {
             return;
         }
         if (user.verify(password)) {
+            ctx.body = {
+                _id: user._id,
+                username: user.username,
+                email: user.email
+            };
             const accessToken = await user.generateToken();
             ctx.cookies.set('access_token', accessToken, {
                 httpOnly: true,
                 maxAge: 1000 * 60 * 60 * 24 * 7
             });
-            ctx.body = {
-                message: 'login success'
-            };
         } else { /* Wrong password */
             ctx.status = 403;
             ctx.body = {
@@ -88,4 +94,17 @@ exports.localLogin = async (ctx) => {
     } catch (e) {
         ctx.throw(500);
     }
+};
+
+exports.check = (ctx) => {
+    const { user } = ctx.request;
+
+    if (!user) { /* accessToken not verified */
+        ctx.status = 403;
+        return;
+    }
+
+    ctx.body = {
+        user
+    };
 };

@@ -9,5 +9,6 @@ auth.get('/', (ctx) => {
 
 auth.post('/register/local', authControl.localRegister);
 auth.post('/login/local', authControl.localLogin);
+auth.get('/check', authControl.check);
 
 module.exports = auth;

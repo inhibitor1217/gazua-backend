@@ -8,9 +8,9 @@ function generateToken (payload, subject) {
                 expiresIn: '7d',
                 issuer: 'gazua.com',
                 subject
-            }, (err, token) => {
-                if (err) {
-                    reject(err);
+            }, (error, token) => {
+                if (error) {
+                    reject(error);
                 }
                 resolve(token);
             });
@@ -18,4 +18,16 @@ function generateToken (payload, subject) {
     );
 }
 
-module.exports.generateToken = generateToken;
+function decodeToken (token) {
+    return new Promise(
+        (resolve, reject) => {
+            jwt.verify(token, secret, (error, decoded) => {
+                if (error) reject(error);
+                resolve(decoded);
+            });
+        }
+    );
+}
+
+exports.generateToken = generateToken;
+exports.decodeToken = decodeToken;

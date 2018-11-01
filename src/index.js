@@ -10,13 +10,15 @@ const bodyParser = require('koa-bodyparser');
 
 const api = require('./api');
 const db = require('./db');
+const jwtMiddleware = require('lib/middlewares/jwtMiddleware');
 
 db.connect();
 
-const app = new Koa();
 const router = new Router();
 router.use('/api', api.routes());
 
+const app = new Koa();
+app.use(jwtMiddleware);
 app.use(bodyParser());
 app.use(router.routes());
 app.use(router.allowedMethods());
