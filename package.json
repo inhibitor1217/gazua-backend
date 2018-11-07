@@ -10,6 +10,7 @@
   "author": "inhibitor",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^6.1.0",
     "joi": "^14.0.2",
     "jsonwebtoken": "^8.3.0",
