@@ -60,6 +60,11 @@ exports.localLogin = async (ctx) => {
 
     if (result.error) { /* Schema Error */
         ctx.status = 400;
+        if (result.error.toString().includes('email')) {
+            ctx.body = {
+                message: 'email schema error'
+            };
+        }
         return;
     }
 
@@ -106,5 +111,19 @@ exports.check = (ctx) => {
 
     ctx.body = {
         user
+    };
+};
+
+exports.checkByEmail = async (ctx) => {
+    const { email } = ctx.request.query;
+
+    if (!email) {
+        ctx.status = 400;
+        return;
+    }
+
+    const emailExists = await User.findByEmail(email);
+    ctx.body = {
+        message: emailExists ? 'user exists' : 'user does not exist'
     };
 };
