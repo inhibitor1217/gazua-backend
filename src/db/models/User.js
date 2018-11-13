@@ -23,6 +23,9 @@ const UserSchema = new Schema({
             id: String,
             accessToken: String
         }
+    },
+    userdata: {
+        wallet: Number
     }
 });
 

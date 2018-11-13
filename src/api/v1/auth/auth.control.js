@@ -5,7 +5,7 @@ exports.localRegister = async (ctx) => {
     const { body } = ctx.request;
 
     const schema = Joi.object({
-        username: Joi.string().regex(/^[a-zA-Z0-9]{3,12}$/).required(),
+        username: Joi.string().min(2).max(30).required(),
         email: Joi.string().email().required(),
         password: Joi.string().min(6).max(30)
     });
@@ -38,11 +38,6 @@ exports.localRegister = async (ctx) => {
             username: user.username,
             email: user.email
         };
-        const accessToken = await user.generateToken();
-        ctx.cookies.set('access_token', accessToken, {
-            httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24 * 7
-        });
     } catch (e) {
         ctx.throw(500);
     }
