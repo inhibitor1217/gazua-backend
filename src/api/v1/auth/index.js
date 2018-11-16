@@ -9,6 +9,7 @@ auth.get('/', (ctx) => {
 
 auth.post('/register/local', authControl.localRegister);
 auth.post('/login/local', authControl.localLogin);
+auth.post('/logout', authControl.logout);
 auth.get('/check', authControl.check);
 auth.get('/check-email', authControl.checkByEmail);
 

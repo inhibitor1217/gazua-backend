@@ -40,8 +40,8 @@ app.use((ctx, next) => {
     return next();
 });
 
-app.use(jwtMiddleware);
 app.use(bodyParser());
+app.use(jwtMiddleware);
 app.use(router.routes());
 app.use(router.allowedMethods());
 

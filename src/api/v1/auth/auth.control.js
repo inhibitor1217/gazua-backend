@@ -96,6 +96,14 @@ exports.localLogin = async (ctx) => {
     }
 };
 
+exports.logout = (ctx) => {
+    ctx.cookies.set('access-token', null, {
+        httpOnly: true,
+        maxAge: 0
+    });
+    ctx.status = 204;
+};
+
 exports.check = (ctx) => {
     const { user } = ctx.request;
 
