@@ -11,6 +11,7 @@
   "author": "inhibitor",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
     "cors": "^2.8.5",
     "dotenv": "^6.1.0",
     "joi": "^14.0.2",
