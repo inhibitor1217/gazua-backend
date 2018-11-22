@@ -1,0 +1,1 @@
+const CurrencyTicker = require('db/models/CurrencyTicker');

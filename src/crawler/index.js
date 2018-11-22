@@ -10,8 +10,11 @@ const CurrencyTicker = require('db/models/CurrencyTicker');
 
 db.connect();
 
+const currencyPairs = [
+    'btc_krw', 'etc_krw', 'eth_krw', 'xrp_krw', 'bch_krw', 'ltc_krw'
+];
+
 const retrieveTicker = async (currencyPair) => {
-    console.log('Retrieving data for currency ' + currencyPair);
     try {
         const { data: ticker } = await axios.get(korbitURI + '/ticker/detailed', {
             params: {
@@ -25,5 +28,5 @@ const retrieveTicker = async (currencyPair) => {
 };
 
 const tickerLoop = setInterval(() => {
-    retrieveTicker('btc_krw');
+    currencyPairs.forEach((currencyPair) => retrieveTicker(currencyPair));
 }, 20 * 1000);
