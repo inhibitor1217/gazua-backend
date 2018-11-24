@@ -33,11 +33,22 @@ CurrencyTicker.saveTicker = (currencyPair, ticker) => {
                     currencyPair, ticker
                 });
                 newCurrencyTicker.save();
+                console.log(`Updated ticker: ${currencyPair}, ${new Date().toTimeString()}`);
             }
         })
         .catch((err) => {
             throw (err);
         });
+};
+
+CurrencyTicker.findLastUpdated = (currencyPair) => {
+    if (!validCurrencyPairs.includes(currencyPair)) {
+        throw (new Error('invalid currency pair'));
+    }
+    return CurrencyTicker.find(
+        { currencyPair },
+        { 'ticker.timestamp': true }
+    ).sort({ 'ticker.timestamp': -1 }).limit(1);
 };
 
 CurrencyTicker.findRecentTicker = (currencyPair) => {
@@ -46,9 +57,8 @@ CurrencyTicker.findRecentTicker = (currencyPair) => {
     }
     return CurrencyTicker.find(
         { currencyPair },
-        { ticker: true, _id: false }
-    )
-        .sort({ 'ticker.timestamp': +1 }).limit(1);
+        { _id: false, __v: false }
+    ).sort({ 'ticker.timestamp': -1 }).limit(1);
 };
 
 CurrencyTicker.findRecentTickersWithInterval = (currencyPair, timeQuery) => {
