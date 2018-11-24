@@ -40,4 +40,28 @@ CurrencyTicker.saveTicker = (currencyPair, ticker) => {
         });
 };
 
+CurrencyTicker.findRecentTicker = (currencyPair) => {
+    if (!validCurrencyPairs.includes(currencyPair)) {
+        throw (new Error('invalid currency pair'));
+    }
+    return CurrencyTicker.find(
+        { currencyPair },
+        { ticker: true, _id: false }
+    )
+        .sort({ 'ticker.timestamp': +1 }).limit(1);
+};
+
+CurrencyTicker.findRecentTickersWithInterval = (currencyPair, timeQuery) => {
+    if (!validCurrencyPairs.includes(currencyPair)) {
+        throw (new Error('invalid currency pair'));
+    }
+    return CurrencyTicker.find(
+        {
+            currencyPair,
+            'ticker.timestamp': { $gte: Date.now() - timeQuery }
+        },
+        { ticker: true, _id: false })
+        .sort({ 'ticker.timestamp': +1 });
+};
+
 module.exports = CurrencyTicker;

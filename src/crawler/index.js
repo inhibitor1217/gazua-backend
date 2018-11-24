@@ -29,4 +29,4 @@ const retrieveTicker = async (currencyPair) => {
 
 const tickerLoop = setInterval(() => {
     currencyPairs.forEach((currencyPair) => retrieveTicker(currencyPair));
-}, 20 * 1000);
+}, 60 * 1000);
