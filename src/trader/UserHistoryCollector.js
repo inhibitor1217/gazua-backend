@@ -23,6 +23,7 @@ module.exports = (function () {
         const { _id } = await userHistory.save();
         user.userdata.history.push(_id);
         await user.save();
+        console.log(`Added wallet history of user: ${user._id}`);
     };
 
     return {
@@ -37,6 +38,8 @@ module.exports = (function () {
                 tickers[currencyPair] = ticker[0].ticker.last;
             }
             try {
+                const tic = Date.now();
+                console.log('Updating user history ...');
                 await User.find()
                     .then((users) => {
                         users.forEach(addHistoryForUser(tickers));
