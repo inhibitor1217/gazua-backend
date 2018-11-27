@@ -8,5 +8,10 @@ exports.wallet = async (ctx) => {
         return;
     }
 
-    ctx.body = await User.retrieveWallet(user);
+    try {
+        ctx.body = await User.retrieveWallet(user);
+    } catch (e) {
+        ctx.throw(500);
+        console.log(e);
+    }
 };

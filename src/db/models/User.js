@@ -37,7 +37,8 @@ const UserSchema = new Schema({
                 type: Date,
                 default: Date.now
             }
-        }
+        },
+        history: [{ type: mongoose.Schema.Types.ObjectId, ref: 'UserHistory' }]
     }
 });
 
@@ -67,7 +68,7 @@ UserSchema.methods.generateToken = function () {
 const User = mongoose.model('User', UserSchema);
 
 User.findByEmail = (email) => {
-    return User.findOne({ email }).exec();
+    return User.findOne({ email });
 };
 
 User.localRegister = ({ username, email, password }) => {
@@ -80,7 +81,7 @@ User.localRegister = ({ username, email, password }) => {
 };
 
 User.retrieveWallet = (user) => {
-    return User.findById(user._id, { 'userdata.wallet': true }).exec();
+    return User.findById(user._id, { 'userdata.wallet': true });
 };
 
 module.exports = User;

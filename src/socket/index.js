@@ -40,4 +40,4 @@ setInterval(() => {
             console.log(e);
         }
     });
-}, 1000 * 60);
+}, 1000 * 60); // check every minute
