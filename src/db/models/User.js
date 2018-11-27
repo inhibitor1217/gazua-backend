@@ -25,8 +25,29 @@ const UserSchema = new Schema({
         }
     },
     userdata: {
-        wallet: Number
+        wallet: {
+            krw: { type: Number, default: 1000000 },
+            btc_krw: { type: Number, default: 0 },
+            etc_krw: { type: Number, default: 0 },
+            eth_krw: { type: Number, default: 0 },
+            xrp_krw: { type: Number, default: 0 },
+            bch_krw: { type: Number, default: 0 },
+            ltc_krw: { type: Number, default: 0 },
+            lastUpdated: {
+                type: Date,
+                default: Date.now
+            }
+        }
     }
+});
+
+/*
+ * This middleware is not fired when using findOneAndUpdate, etc
+ * Should use 'save'
+ */
+UserSchema.pre('save', function (next) {
+    this.userdata.wallet.lastUpdated = Date.now();
+    next();
 });
 
 UserSchema.methods.verify = function (password) {
@@ -56,6 +77,10 @@ User.localRegister = ({ username, email, password }) => {
         password: hash(password)
     });
     return user.save();
+};
+
+User.retrieveWallet = (user) => {
+    return User.findById(user._id, { 'userdata.wallet': true }).exec();
 };
 
 module.exports = User;

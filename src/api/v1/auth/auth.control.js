@@ -40,6 +40,7 @@ exports.localRegister = async (ctx) => {
         };
     } catch (e) {
         ctx.throw(500);
+        console.log(e);
     }
 };
 
