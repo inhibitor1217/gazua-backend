@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const token = require('lib/token');
 const { Schema } = mongoose;
 const { PASSWORD_KEY: secret } = process.env;
+const UserHistory = require('db/models/UserHistory');
 
 function hash (password) {
     return crypto.createHmac('sha256', secret)
@@ -38,7 +39,10 @@ const UserSchema = new Schema({
                 default: Date.now
             }
         },
-        history: [{ type: mongoose.Schema.Types.ObjectId, ref: 'UserHistory' }]
+        history: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'UserHistoryModel'
+        }]
     }
 });
 
@@ -82,6 +86,37 @@ User.localRegister = ({ username, email, password }) => {
 
 User.retrieveWallet = (user) => {
     return User.findById(user._id, { 'userdata.wallet': true });
+};
+
+User.retrieveLastHistory = (user) => {
+    return User.findById(user._id, { 'userdata.history': true })
+        .populate({
+            path: 'userdata.history',
+            options: {
+                sort: { timestamp: -1 },
+                limit: 1
+            }
+        })
+        .then((user) => {
+            return user.userdata.history;
+        });
+};
+
+User.retrieveYesterdayHistory = (user) => {
+    return User.findById(user._id, { 'userdata.history': true })
+        .populate({
+            path: 'userdata.history',
+            match: {
+                timestamp: { $lte: Date.now() - 1000 * 60 * 60 * 24 }
+            },
+            options: {
+                sort: { timestamp: -1 },
+                limit: 1
+            }
+        })
+        .then((user) => {
+            return user.userdata.history;
+        });
 };
 
 module.exports = User;
