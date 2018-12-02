@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const { currencyPairs, orderCondition } = require('lib/constants');
 
 const BidSchema = new Schema({
     issuer: {
@@ -27,32 +26,14 @@ const BidSchema = new Schema({
 const Bid = mongoose.model('Bid', BidSchema);
 
 Bid.register = (bid) => {
-    const { currencyPair, price, volume } = bid;
-    if (!currencyPair || !currencyPairs.includes(bid.currencyPair)) {
-        throw new Error('invalid currency pair');
-    }
-    if (!price ||
-            price < orderCondition[currencyPair].min_price ||
-            price > orderCondition[currencyPair].max_price ||
-            Math.floor(price / orderCondition[currencyPair].tick_size) === price / orderCondition[currencyPair].tick_size) {
-        throw new Error('invalid price');
-    }
-    if (!volume ||
-            volume < orderCondition[currencyPair].order_min_size ||
-            volume > orderCondition[currencyPair].order_max_size) {
-        throw new Error('invalid volume');
-    }
-    return new Bid(Bid).save();
+    return new Bid(bid).save();
 };
 
 Bid.withdraw = (bid) => {
-    Bid.findById(bid._id)
-        .then((bid) => {
-            if (bid.state !== 'withdrawn') {
-                bid.state = 'withdrawn';
-                bid.save();
-            }
-        });
+    if (bid && bid.state === 'pending') {
+        bid.state = 'withdrawn';
+        return bid.save();
+    }
 };
 
 Bid.retrievePending = () => {

@@ -108,6 +108,9 @@ User.retrieveLastHistory = (user) => {
             }
         })
         .then((user) => {
+            if (!user) {
+                return null;
+            }
             return user.userdata.history;
         });
 };
@@ -125,28 +128,39 @@ User.retrieveYesterdayHistory = (user) => {
             }
         })
         .then((user) => {
+            if (!user) {
+                return null;
+            }
             return user.userdata.history;
         });
 };
 
-User.retrieveAsks = (user, options) => {
+User.retrieveAsks = (user, match, options) => {
     return User.findById(user._id, { 'userdata.asks': true })
         .populate({
             path: 'userdata.asks',
+            match,
             options
         })
         .then((user) => {
+            if (!user) {
+                return null;
+            }
             return user.userdata.asks;
         });
 };
 
-User.retrieveBids = (user, options) => {
+User.retrieveBids = (user, match, options) => {
     return User.findById(user._id, { 'userdata.bids': true })
         .populate({
             path: 'userdata.bids',
+            match,
             options
         })
         .then((user) => {
+            if (!user) {
+                return null;
+            }
             return user.userdata.bids;
         });
 };
