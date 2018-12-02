@@ -10,8 +10,16 @@ exports.retrieveAsk = async (ctx) => {
         currencyPairs: _currencyPairs,
         limit
     } = query;
+    if (!_states || !_currencyPairs) {
+        ctx.status = 400;
+        return;
+    }
     const states = JSON.parse(_states);
     const currencyPairs = JSON.parse(_currencyPairs);
+    if (states.length === 0 || currencyPairs.length === 0) {
+        ctx.status = 400;
+        return;
+    }
 
     if (!user) {
         ctx.status = 403;
@@ -137,8 +145,16 @@ exports.retrieveBid = async (ctx) => {
         currencyPairs: _currencyPairs,
         limit
     } = query;
+    if (!_states || !_currencyPairs) {
+        ctx.status = 400;
+        return;
+    }
     const states = JSON.parse(_states);
     const currencyPairs = JSON.parse(_currencyPairs);
+    if (states.length === 0 || currencyPairs.length === 0) {
+        ctx.status = 400;
+        return;
+    }
 
     if (!user) {
         ctx.status = 403;
