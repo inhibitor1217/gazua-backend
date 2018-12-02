@@ -14,15 +14,6 @@ exports.ticker = async (ctx) => {
             ctx.body = await CurrencyTicker.findRecentTicker(currencyPair);
         } else {
             switch (timeInterval.toLowerCase()) {
-            case 'h':
-            case 'hour':
-            case '1h':
-                // retrieve data for 1 hour
-                ctx.body = await CurrencyTicker
-                    .findRecentTickersWithInterval(
-                        currencyPair, 1000 * 60 * 60
-                    );
-                break;
             case '6h':
             case '6hour':
             case '6hours':

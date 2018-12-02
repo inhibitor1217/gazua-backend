@@ -4,6 +4,8 @@ const token = require('lib/token');
 const { Schema } = mongoose;
 const { PASSWORD_KEY: secret } = process.env;
 const UserHistory = require('db/models/UserHistory');
+const Ask = require('db/models/Ask');
+const Bid = require('db/models/Bid');
 
 function hash (password) {
     return crypto.createHmac('sha256', secret)
@@ -42,6 +44,14 @@ const UserSchema = new Schema({
         history: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'UserHistoryModel'
+        }],
+        asks: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Ask'
+        }],
+        bids: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Bid'
         }]
     }
 });
@@ -116,6 +126,28 @@ User.retrieveYesterdayHistory = (user) => {
         })
         .then((user) => {
             return user.userdata.history;
+        });
+};
+
+User.retrieveAsks = (user, options) => {
+    return User.findById(user._id, { 'userdata.asks': true })
+        .populate({
+            path: 'userdata.asks',
+            options
+        })
+        .then((user) => {
+            return user.userdata.asks;
+        });
+};
+
+User.retrieveBids = (user, options) => {
+    return User.findById(user._id, { 'userdata.bids': true })
+        .populate({
+            path: 'userdata.bids',
+            options
+        })
+        .then((user) => {
+            return user.userdata.bids;
         });
 };
 

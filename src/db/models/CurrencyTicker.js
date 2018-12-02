@@ -1,9 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-
-const validCurrencyPairs = [
-    'btc_krw', 'etc_krw', 'eth_krw', 'xrp_krw', 'bch_krw', 'ltc_krw'
-];
+const { currencyPairs } = require('lib/constants');
 
 const CurrencyTickerSchema = new Schema({
     currencyPair: String,
@@ -23,7 +20,7 @@ const CurrencyTickerSchema = new Schema({
 const CurrencyTicker = mongoose.model('Currency', CurrencyTickerSchema);
 
 CurrencyTicker.saveTicker = (currencyPair, ticker) => {
-    if (!validCurrencyPairs.includes(currencyPair)) {
+    if (!currencyPairs.includes(currencyPair)) {
         throw (new Error('invalid currency pair'));
     }
     CurrencyTicker.findOne({ currencyPair, 'ticker.timestamp': ticker.timestamp })
@@ -42,7 +39,7 @@ CurrencyTicker.saveTicker = (currencyPair, ticker) => {
 };
 
 CurrencyTicker.findLastUpdated = (currencyPair) => {
-    if (!validCurrencyPairs.includes(currencyPair)) {
+    if (!currencyPairs.includes(currencyPair)) {
         throw (new Error('invalid currency pair'));
     }
     return CurrencyTicker.find(
@@ -52,7 +49,7 @@ CurrencyTicker.findLastUpdated = (currencyPair) => {
 };
 
 CurrencyTicker.findRecentTicker = (currencyPair) => {
-    if (!validCurrencyPairs.includes(currencyPair)) {
+    if (!currencyPairs.includes(currencyPair)) {
         throw (new Error('invalid currency pair'));
     }
     return CurrencyTicker.find(
@@ -62,7 +59,7 @@ CurrencyTicker.findRecentTicker = (currencyPair) => {
 };
 
 CurrencyTicker.findRecentTickersWithInterval = (currencyPair, timeQuery) => {
-    if (!validCurrencyPairs.includes(currencyPair)) {
+    if (!currencyPairs.includes(currencyPair)) {
         throw (new Error('invalid currency pair'));
     }
     return CurrencyTicker.find(
