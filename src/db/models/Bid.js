@@ -20,7 +20,7 @@ const BidSchema = new Schema({
     state: {
         type: String,
         default: 'pending'
-    } // 'pending' | 'completed' | 'withdrawn'
+    } // 'pending' | 'completed' | 'withdrawn' | 'warning'
 });
 
 const Bid = mongoose.model('Bid', BidSchema);
@@ -36,8 +36,14 @@ Bid.withdraw = (bid) => {
     }
 };
 
-Bid.retrievePending = () => {
-    return Bid.find({ state: 'pending' })
+Bid.retrievePending = (currencyPair) => {
+    return Bid.find({
+        $and: [
+            { $or: [{ state: 'pending' }, { state: 'warning' }] },
+            { currencyPair }
+        ]
+    })
+        .populate({ path: 'issuer', select: 'userdata.wallet' })
         .sort({ timestamp: +1 });
 };
 

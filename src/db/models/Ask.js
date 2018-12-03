@@ -20,7 +20,7 @@ const AskSchema = new Schema({
     state: {
         type: String,
         default: 'pending'
-    } // 'pending' | 'completed' | 'withdrawn'
+    } // 'pending' | 'completed' | 'withdrawn' | 'warning'
 });
 
 const Ask = mongoose.model('Ask', AskSchema);
@@ -36,8 +36,14 @@ Ask.withdraw = (ask) => {
     }
 };
 
-Ask.retrievePending = () => {
-    return Ask.find({ state: 'pending' })
+Ask.retrievePending = (currencyPair) => {
+    return Ask.find({
+        $and: [
+            { $or: [{ state: 'pending' }, { state: 'warning' }] },
+            { currencyPair }
+        ]
+    })
+        .populate({ path: 'issuer', select: 'userdata.wallet' })
         .sort({ timestamp: +1 });
 };
 

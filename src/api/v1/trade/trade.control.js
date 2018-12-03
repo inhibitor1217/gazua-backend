@@ -17,7 +17,7 @@ exports.retrieveAsk = async (ctx) => {
     const states = JSON.parse(_states);
     const currencyPairs = JSON.parse(_currencyPairs);
     if (states.length === 0 || currencyPairs.length === 0) {
-        ctx.status = 400;
+        ctx.body = [];
         return;
     }
 
@@ -65,7 +65,7 @@ exports.withdrawAsk = async (ctx) => {
         const ask = await Ask.findById(askID);
         if (!ask) {
             ctx.status = 400;
-            ctx.body = { error: 'invalid ask id' };
+            ctx.body = { message: 'invalid ask id' };
             return;
         }
         if (user._id.toString() !== ask.issuer.toString()) {
@@ -74,7 +74,7 @@ exports.withdrawAsk = async (ctx) => {
         }
         if (ask.state !== 'pending') {
             ctx.status = 400;
-            ctx.body = { error: 'invalid ask state' };
+            ctx.body = { message: 'invalid ask state' };
             return;
         }
         await Ask.withdraw(ask);
@@ -95,7 +95,7 @@ exports.registerAsk = async (ctx) => {
     const { currencyPair, price, volume } = body;
     if (!currencyPair || !currencyPairs.includes(currencyPair)) {
         ctx.status = 400;
-        ctx.body = { error: 'invalid currency pair' };
+        ctx.body = { message: 'invalid currency pair' };
         return;
     }
     if (!price ||
@@ -103,14 +103,14 @@ exports.registerAsk = async (ctx) => {
             price > orderCondition[currencyPair].max_price ||
             Math.floor(price / orderCondition[currencyPair].tick_size) !== price / orderCondition[currencyPair].tick_size) {
         ctx.status = 400;
-        ctx.body = { error: 'invalid price' };
+        ctx.body = { message: 'invalid price' };
         return;
     }
     if (!volume ||
             volume < orderCondition[currencyPair].order_min_size ||
             volume > orderCondition[currencyPair].order_max_size) {
         ctx.status = 400;
-        ctx.body = { error: 'invalid volume' };
+        ctx.body = { message: 'invalid volume' };
         return;
     }
 
@@ -152,7 +152,7 @@ exports.retrieveBid = async (ctx) => {
     const states = JSON.parse(_states);
     const currencyPairs = JSON.parse(_currencyPairs);
     if (states.length === 0 || currencyPairs.length === 0) {
-        ctx.status = 400;
+        ctx.body = [];
         return;
     }
 
@@ -227,7 +227,7 @@ exports.registerBid = async (ctx) => {
     const { currencyPair, price, volume } = body;
     if (!currencyPair || !currencyPairs.includes(currencyPair)) {
         ctx.status = 400;
-        ctx.body = { error: 'invalid currency pair' };
+        ctx.body = { message: 'invalid currency pair' };
         return;
     }
     if (!price ||
@@ -235,14 +235,14 @@ exports.registerBid = async (ctx) => {
             price > orderCondition[currencyPair].max_price ||
             Math.floor(price / orderCondition[currencyPair].tick_size) !== price / orderCondition[currencyPair].tick_size) {
         ctx.status = 400;
-        ctx.body = { error: 'invalid price' };
+        ctx.body = { message: 'invalid price' };
         return;
     }
     if (!volume ||
             volume < orderCondition[currencyPair].order_min_size ||
             volume > orderCondition[currencyPair].order_max_size) {
         ctx.status = 400;
-        ctx.body = { error: 'invalid volume' };
+        ctx.body = { message: 'invalid volume' };
         return;
     }
 

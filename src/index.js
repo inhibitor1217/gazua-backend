@@ -22,7 +22,8 @@ const app = new Koa();
 /* configure CORS issue */
 app.use((ctx, next) => {
     const whiteList = [
-        'localhost'
+        'localhost',
+        'ssal.sparcs.org'
     ];
     const origin = ctx.header['origin'];
     whiteList.every(el => {
